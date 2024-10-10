@@ -1,0 +1,51 @@
+Das mit den Relais habe ich nur auf dem Breadboard gebaut, daher habe ich keinen Schaltplan. Aber du musst eigentlich nur GND mit GND,
+ VCC mit 3,3V und IN mit dem Pin, der steuert, verbinden.
+
+Die Feuchtigkeitssensoren und Relais müssen einfach an die Pins angeschlossen werden, die im Programmcode genutzt werden und 
+zusätzlich noch Spannung und GND. Das ist eigentlich schon alles. Freilaufdioden habe ich nicht benutzt, 
+sind aber evtl. gar nicht verkehrt. Stören tun sie auf jeden Fall nicht. Better safe than sorry...
+
+Du steckst den Sensor in ein Wasserglas und hältst den in die Luft und merkst dir jeweils die Messwerte.
+ Dann kannst du per map() das Ganze auf % umrechnen, siehe https://github.com/dschulte/bewaesserungsanlage/blob/master/src/main.cpp#L57
+
+
+Saubere Arbeit 👌🏽 ich weiß nicht, ob du es gemacht hast, aber den Sensor solltest du an den Bauteilen und an den Kanten 
+mit Nagellack isolieren. Ansonsten geht der nach maximal einem Monat Hops.
+Danke für den Hinweis. Ich habe den Sensor schon mit Urethanlack überzogen. Das sollte dauerhaft funktionieren. 
+Aber ich werde die Anleitung dahingehend noch ergänzen.
+Bisher hatte ich noch keine Probleme. Ich habe einen Teil der Sensoren auch Urethan 71 ( https://amzn.to/3ihwz9M *) lackiert, 
+damit die dauerhaft wasserfest sind.
+
+
+
+Konfiguration :
+
+Die wichtigsten Konfigurationseinstellungen, wie z.B. die Zugangsdaten fürs Wlan, befinden sich in der Datei SystemConfig.h. 
+Da diese bei jedem unterschiedlich sind, gibt es eine Beispieldatei namens SystemConfig.h.example. 
+Diese muss kopiert und dann angepasst werden.
+
+Mit dem aktuellen Entwicklungsstand müssen die Anzahl der Feuchtigkeitssensoren (SOIL_COUNT und soils), 
+die Anzahl der Ausgänge (VALVE_COUNT und valves) und die Verknüpfungen zur automatischen Bewässerung 
+(WATERINGPLAN_COUNT und wateringPlans) vor dem Aufspielen auf den ESP konfiguriert werden.
+
+Die Feuchtigkeitssensoren müssen wie in der späteren Benutzung angeschlossen sein und dann kalibriert werden, 
+da diese leicht unterschiedliche Werte liefern und auch die ADC Eingänge des ESP unterschiedlich sind. 
+Die Kalibrierung läuft wie folgt:
+
+    Sensoreingänge (soils) in der SystemConfig.h einrichten und Programm aufspielen
+    Sensor trocken in die Luft halten und Wert "raw" in der Weboberfläche ablesen
+    Sensor bis zur Einkerbung in Wasser stellen und Wert "raw" in der Weboberfläche ablesen
+    Werte beim entsprechenden Sensor in der SystemConfig.h eintragen (erster Wert trocken, zweiter Wert feucht)
+    Programm erneut aufspielen und testen ob die Werte Sinn ergeben (Achtung: "raw s" und der Prozentwert haben einen Tiefpass, 
+    sodass sich der Wert bei schnellen Änderungen der Feuchte nur langsam angleicht. Reset hilft beim Testen.)
+
+
+To Do:
+
+    Bewässerungszeiten
+        maximale Dauer bei manueller Bewässerung
+        automatische Bewässerung nur zu bestimmten Zeiten
+    Parameter über Weboberfläche einstellbar machen
+    initiales Aufspielen/OTA beschreiben
+    Anpassung des Hostnames beschreiben
+
